@@ -7,12 +7,10 @@ public interface IMigrationScheduler
     
 public class MigrationScheduler : IMigrationScheduler
 {
-    private readonly IProcessDeployedServices _processDeployedServices;
     private TimeSpan _delay = TimeSpan.FromMinutes(5);
     
-    public MigrationScheduler(IProcessDeployedServices processDeployedServices)
+    public MigrationScheduler()
     {
-        _processDeployedServices = processDeployedServices;
     }
     
     public void ExecuteWithDelay(CancellationToken token, TimeSpan delay)
@@ -23,7 +21,7 @@ public class MigrationScheduler : IMigrationScheduler
         {
             stopWatch.Start();
                 
-            _processDeployedServices.Execute();
+//            _processDeployedServices.Execute();
 
             WaitForNextExecution(token, stopWatch);
         }
