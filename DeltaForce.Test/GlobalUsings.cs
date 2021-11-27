@@ -10,9 +10,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 
 global using FluentAssertions;
-global using Flurl.Http.Testing;
 global using Lamar;
-global using Newtonsoft.Json.Linq;
 global using NUnit.Framework;
 global using NSubstitute;
 global using TestStack.BDDfy.Configuration;
