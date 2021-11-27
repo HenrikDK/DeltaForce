@@ -1,5 +1,4 @@
 using DeltaForce.Infrastructure;
-using DeltaForce.Migrate;
 
 namespace DeltaForce.Test.AcceptanceTests;
 
@@ -31,7 +30,6 @@ public class AcceptanceTest
     {
         _registry.AddSingleton(Substitute.For<ILogger>());
         _registry.AddSingleton(Substitute.For<ILogger<ServiceHost>>());
-        _registry.AddSingleton(Substitute.For<ILogger<ProcessDeployedServices>>());
     }
         
     private void MockMemoryCache()
