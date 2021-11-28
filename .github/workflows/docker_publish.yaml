@@ -2,9 +2,9 @@ name: Docker Publish
 
 on:
   push:
-    # Publish `master` as Docker `latest` image.
+    # Publish `main` as Docker `latest` image.
     branches:
-      - master
+      - main
 jobs:
   build1:
     runs-on: ubuntu-latest
