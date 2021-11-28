@@ -7,6 +7,10 @@ RUN dotnet publish -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
+RUN apk update
+RUN apk add git
+RUN apk add openssh-client
+
 RUN adduser --disabled-password \
   --home /app \
   --gecos '' dotnetuser && chown -R dotnetuser /app
