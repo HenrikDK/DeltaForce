@@ -7,10 +7,12 @@ public interface IMigrationScheduler
     
 public class MigrationScheduler : IMigrationScheduler
 {
+    private readonly IProcessMigrationScripts _processMigrationScripts;
     private TimeSpan _delay = TimeSpan.FromMinutes(5);
     
-    public MigrationScheduler()
+    public MigrationScheduler(IProcessMigrationScripts processMigrationScripts)
     {
+        _processMigrationScripts = processMigrationScripts;
     }
     
     public void ExecuteWithDelay(CancellationToken token, TimeSpan delay)
@@ -20,8 +22,8 @@ public class MigrationScheduler : IMigrationScheduler
         while (!token.IsCancellationRequested)
         {
             stopWatch.Start();
-                
-//            _processDeployedServices.Execute();
+            
+            _processMigrationScripts.CloneRepoAndProcessScripts();
 
             WaitForNextExecution(token, stopWatch);
         }
