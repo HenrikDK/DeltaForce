@@ -29,7 +29,7 @@ public class StateRepository : IStateRepository
 
     public void Update(string commitHash)
     {
-        var sql = _dialect.UpdateState;
+        var sql = _dialect.SaveState;
         using var connection = _connectionFactory.Get();
         connection.Execute(sql, new {commitHash});
     }
