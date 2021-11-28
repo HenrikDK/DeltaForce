@@ -32,8 +32,7 @@ public class ConnectionFactory : IConnectionFactory
     {
         return _dbType.Value switch
         {
-            "postgresql" => new NpgSqlDialect(),
-            "oracle" => new OracleSqlDialect(),
+            "pgsql" => new NpgSqlDialect(),
             "mysql" => new MySqlDialect(),
             "mssql" => new MsSqlDialect(),
             _ => null
@@ -44,8 +43,7 @@ public class ConnectionFactory : IConnectionFactory
     {
         return _dbType.Value switch
         {
-            "postgresql" => new NpgsqlConnection(_connectionString.Value),
-            "oracle" => new OracleConnection(_connectionString.Value),
+            "pgsql" => new NpgsqlConnection(_connectionString.Value),
             "mysql" => new MySqlConnection(_connectionString.Value),
             "mssql" => new SqlConnection(_connectionString.Value),
             _ => null
