@@ -1,0 +1,27 @@
+name: Docker Publish
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
+jobs:
+  build1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag delta-force
+        working-directory: DeltaForce
+
+      - name: Log into registry
+        run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+      - name: Push image
+        run: |
+          build_id=$(date +'%Y%m%d')
+          build_id+="-"
+          build_id+=$(git rev-parse --short "$GITHUB_SHA")
+          docker tag delta-force ${{ secrets.DOCKER_USER }}/delta-force:$build_id
+          docker push ${{ secrets.DOCKER_USER }}/delta-force:$build_id
