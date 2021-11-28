@@ -9,5 +9,5 @@ public interface ISqlDialect
     string UpdateScript { get; }
     
     string GetState { get; }
-    string UpdateState { get; }
+    string SaveState { get; }
 }
