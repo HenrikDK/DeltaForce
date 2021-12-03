@@ -8,7 +8,7 @@ public interface IMigrationScheduler
 public class MigrationScheduler : IMigrationScheduler
 {
     private readonly IProcessMigrationScripts _processMigrationScripts;
-    private TimeSpan _delay = TimeSpan.FromMinutes(5);
+    private TimeSpan _delay = TimeSpan.FromMinutes(1);
     
     public MigrationScheduler(IProcessMigrationScripts processMigrationScripts)
     {
