@@ -16,7 +16,7 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
     private readonly IApplyMigrationScript _applyMigrationScript;
     private static readonly Gauge PendingScripts = Metrics.CreateGauge("delta_force_pending_scripts_count", "Number of pending sql scripts.");
     private static readonly Histogram JobExecutionTime = Metrics.CreateHistogram("delta_force_apply_script_time_seconds", "Histogram of script execution durations.");
-    private readonly string _workspacePath = "var/delta_force";
+    private readonly string _workspacePath = "delta_force";
 
     public ProcessMigrationScripts(IGitRepository gitRepository, 
         IFileSystemRepository fileSystemRepository,
@@ -42,9 +42,9 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
                 _log.LogInformation($"Latest commit: {previous} - repository master unchanged skipping run.");
                 return;   
             }
-
+            
             CloneRepositoryAndProcessScripts();
-                
+            
             _stateRepository.Update(current);
         }
         catch (Exception e)
