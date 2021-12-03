@@ -32,20 +32,25 @@ public class GitRepository : IGitRepository
        
     public void CloneRepository(string workspacePath)
     {
-        var cmd = $@"GIT_SSH_COMMAND=""ssh -i {_gitSshKeyPath.Value}"" git clone --depth 1 {_gitRepository.Value} -b {_gitBranch.Value} .";
+        var cmd = $"clone --depth 1 {_gitRepository.Value} -b {_gitBranch.Value} working";
         
-        var localPath = Path.Combine(workspacePath, "working");
+        var localPath = Path.Combine(Directory.GetCurrentDirectory(), workspacePath);
 
         _logger.LogInformation($"Cloning repo: {_gitRepository.Value} to local folder: {localPath}");
 
-        RunCommandWithOutput(cmd, localPath);
+        RunCommandWithOutput(cmd, localPath, "GIT_SSH_COMMAND", $"ssh -i {_gitSshKeyPath.Value}");
     }
 
     public string GetLatestCommit()
     {
-        var cmd = $"git ls-remote {_gitRepository.Value} refs/heads/{_gitBranch.Value}";
+        var cmd = $"ls-remote {_gitRepository.Value} refs/heads/{_gitBranch.Value}";
         
         var latest = RunCommandWithOutput(cmd);
+
+        if (!string.IsNullOrEmpty(latest))
+        {
+            latest = latest.Split('\t').First();
+        }
 
         _logger.LogInformation($"Repository: {_gitRepository.Value} - branch: {_gitBranch.Value} - latest commit: {latest}");
 
@@ -57,30 +62,37 @@ public class GitRepository : IGitRepository
         return _fileSystemRepository.GetScripts(workspacePath, _gitPath.Value);
     }
     
-    private string RunCommandWithOutput(string command, string workingDirectory = null)
+    private string RunCommandWithOutput(string command, string workingDirectory = null, string envKey = null, string envValue = null)
     {
         try
         {
             var startInfo = new ProcessStartInfo
             {
-                FileName = "/bin/sh",
+                FileName = "git",
                 Arguments = command,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true,
+                CreateNoWindow = false,
             };
 
-            if (null != workingDirectory)
+            if (workingDirectory != null)
             {
                 startInfo.WorkingDirectory = workingDirectory;
+            }
+
+            if (envKey != null)
+            {
+                startInfo.EnvironmentVariables.Add(envKey, envValue);
             }
 
             var proc = new Process{ StartInfo = startInfo };
             proc.Start();
             proc.WaitForExit();
-            return proc.StandardOutput.ReadToEnd();
+            var result = proc.StandardOutput.ReadToEnd();
+            result += proc.StandardError.ReadToEnd();
+            return result;
         }
         catch (Exception e)
         {
