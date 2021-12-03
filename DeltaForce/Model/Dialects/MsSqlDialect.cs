@@ -9,7 +9,6 @@ where name = 'DeltaForce'";
     public string CreateSchema => @" /* DeltaForce */
 if not exists (select name from sys.schemas where name = 'DeltaForce')
     exec('create schema DeltaForce');
-go
 
 if object_id('DeltaForce.Script', 'U') is null
 begin
