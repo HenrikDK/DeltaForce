@@ -2,7 +2,11 @@ namespace DeltaForce.Model.Dialects;
 
 public class MySqlDialect : ISqlDialect
 {
-    public string CreateDb => @" /* DeltaForce */
+    public string CheckSchema => @" /* DeltaForce */
+select 1 from information_schema.SCHEMATA
+where SCHEMA_NAME = 'DeltaForce'";
+    
+    public string CreateSchema => @" /* DeltaForce */
 create schema if not exists DeltaForce;
 
 create table if not exists DeltaForce.Script(

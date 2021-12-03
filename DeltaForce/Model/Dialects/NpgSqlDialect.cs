@@ -2,9 +2,11 @@ namespace DeltaForce.Model.Dialects;
 
 public class NpgSqlDialect : ISqlDialect
 {
-    public string CreateDb => @" /* DeltaForce */
-drop schema deltaforce cascade;
-
+    public string CheckSchema => @" /* DeltaForce */
+select 1 from pg_catalog.pg_namespace
+where nspname = 'deltaforce'";
+    
+    public string CreateSchema => @" /* DeltaForce */
 create schema if not exists deltaforce;
 
 create table if not exists deltaforce.script(

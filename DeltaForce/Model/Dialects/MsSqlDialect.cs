@@ -2,8 +2,12 @@ namespace DeltaForce.Model.Dialects;
 
 public class MsSqlDialect : ISqlDialect
 {
-    public string CreateDb => @" /* DeltaForce */
-if not exists (select name from sys.schemas where name = N'DeltaForce')
+    public string CheckSchema => @" /* DeltaForce */
+select 1 from sys.schemas 
+where name = 'DeltaForce'";
+    
+    public string CreateSchema => @" /* DeltaForce */
+if not exists (select name from sys.schemas where name = 'DeltaForce')
     exec('create schema DeltaForce');
 go
 
