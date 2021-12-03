@@ -6,7 +6,7 @@ namespace DeltaForce.Migrate;
 
 public interface IApplyMigrationScript
 {
-    void Apply(string script);
+    void Apply(string path, Script script);
 }
     
 public class ApplyMigrationScript : IApplyMigrationScript
@@ -24,20 +24,13 @@ public class ApplyMigrationScript : IApplyMigrationScript
         _log = log;
     }
        
-    public void Apply(string path)
+    public void Apply(string path, Script script)
     {
         if (!_fileSystemRepository.FileExists(path))
         {
             return;
         }
-            
-        var script = _scriptRepository.GetScript(path);
-        if (script != null && script.Status == ScriptStatus.Processed)
-        {
-            _log.LogDebug($"Skipping already successfully applied script {path}");
-            return;
-        }
-
+        
         var sql = _fileSystemRepository.GetFileContents(path);
         var newHash = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(sql)).ToString();
         if (script != null && script.Status == ScriptStatus.Failed)
