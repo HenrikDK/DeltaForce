@@ -8,7 +8,7 @@ public class ServiceHost : IHostedService
     private readonly IMigrationScheduler _migrationScheduler;
     private readonly ISetupAppDb _setupAppDb;
     private readonly ILogger _logger;
-    private TimeSpan _delay = TimeSpan.FromMinutes(5);
+    private TimeSpan _delay = TimeSpan.FromMinutes(1);
     private List<Task> _tasks = new List<Task>();
     private KestrelMetricServer _server = new KestrelMetricServer(1402);
 
