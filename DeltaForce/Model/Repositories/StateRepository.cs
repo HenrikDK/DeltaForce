@@ -27,10 +27,10 @@ public class StateRepository : IStateRepository
         return connection.Query<string>(sql).FirstOrDefault();
     }
 
-    public void Update(string commitHash)
+    public void Update(string hash)
     {
         var sql = _dialect.SaveState;
         using var connection = _connectionFactory.Get();
-        connection.Execute(sql, new {commitHash});
+        connection.Execute(sql, new {hash});
     }
 }
