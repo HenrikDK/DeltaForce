@@ -5,7 +5,7 @@ public interface ISqlDialect
     string CheckSchema { get; }
     string CreateSchema { get; }
     
-    string GetScript { get; }
+    string GetScripts { get; }
     string InsertScript { get; }
     string UpdateScript { get; }
     
