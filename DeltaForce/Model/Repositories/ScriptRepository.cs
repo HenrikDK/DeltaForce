@@ -5,6 +5,8 @@ namespace DeltaForce.Model.Repositories;
 
 public interface IScriptRepository
 {
+    bool Check();
+    void Create();
     Script GetScript(string path);
     void Insert(Script script);
     void Update(Script script);
@@ -22,6 +24,20 @@ public class ScriptRepository : IScriptRepository
         _dialect = connectionFactory.GetDialect();
     }
     
+    public bool Check()
+    {
+        var sql = _dialect.CheckSchema;
+        using var connection = _connectionFactory.Get();
+        return connection.Query<bool>(sql).FirstOrDefault();
+    }
+    
+    public void Create()
+    {
+        var sql = _dialect.CreateSchema;
+        using var connection = _connectionFactory.Get();
+        connection.Execute(sql);
+    }
+
     public Script GetScript(string path)
     {
         var sql = _dialect.GetScript;
