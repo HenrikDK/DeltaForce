@@ -7,7 +7,7 @@ public interface IScriptRepository
 {
     bool Check();
     void Create();
-    Script GetScript(string path);
+    ILookup<string, Script> GetScripts();
     void Insert(Script script);
     void Update(Script script);
     void Apply(Script script);
@@ -38,11 +38,11 @@ public class ScriptRepository : IScriptRepository
         connection.Execute(sql);
     }
 
-    public Script GetScript(string path)
+    public ILookup<string, Script> GetScripts()
     {
-        var sql = _dialect.GetScript;
+        var sql = _dialect.GetScripts;
         using var connection = _connectionFactory.Get();
-        return connection.Query<Script>(sql, new {path}).FirstOrDefault();
+        return connection.Query<Script>(sql).ToLookup(x => x.RepositoryPath);
     }
 
     public void Insert(Script script)
