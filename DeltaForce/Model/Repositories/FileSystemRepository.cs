@@ -30,6 +30,11 @@ public class FileSystemRepository : IFileSystemRepository
     public void CleanWorkspace(string workspacePath)
     {
         _logger.LogInformation("Cleaning workspace");
+        if (!Directory.Exists(workspacePath))
+        {
+            Directory.CreateDirectory(workspacePath);
+        }
+        
         var folders = Directory.GetDirectories(workspacePath);
         folders.ForEach(x =>
         {
@@ -40,7 +45,7 @@ public class FileSystemRepository : IFileSystemRepository
     
     public List<string> GetScripts(string workspacePath, string subFolder, string fileExtension = ".sql")
     {
-        var localRepo = Path.Combine(workspacePath, "working" , subFolder);
+        var localRepo = Path.Combine(workspacePath, "working" , subFolder.TrimStart('/'));
         
         _logger.LogInformation($"Discovering all scripts in folder {localRepo} ..");
             
