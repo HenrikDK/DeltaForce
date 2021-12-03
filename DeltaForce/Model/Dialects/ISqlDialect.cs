@@ -2,7 +2,8 @@ namespace DeltaForce.Model.Dialects;
 
 public interface ISqlDialect
 {
-    string CreateDb { get; }
+    string CheckSchema { get; }
+    string CreateSchema { get; }
     
     string GetScript { get; }
     string InsertScript { get; }
