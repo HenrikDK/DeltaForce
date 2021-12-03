@@ -34,6 +34,7 @@ public class ConnectionFactory : IConnectionFactory
         {
             "pgsql" => new NpgSqlDialect(),
             "mysql" => new MySqlDialect(),
+            "mariadb" => new MySqlDialect(),
             "mssql" => new MsSqlDialect(),
             _ => null
         };
@@ -45,6 +46,7 @@ public class ConnectionFactory : IConnectionFactory
         {
             "pgsql" => new NpgsqlConnection(_connectionString.Value),
             "mysql" => new MySqlConnection(_connectionString.Value),
+            "mariadb" => new MySqlConnection(_connectionString.Value),
             "mssql" => new SqlConnection(_connectionString.Value),
             _ => null
         };
