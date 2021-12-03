@@ -28,11 +28,9 @@ create table if not exists deltaforce.state(
     Modified timestamp not null
 );";
 
-    public string GetScript => @" /* DeltaForce */
+    public string GetScripts => @" /* DeltaForce */
 select s.id, s.scriptname, s.repositorypath, s.hash, s.status, s.errormessage 
-from deltaforce.script s 
-where s.repositorypath = @path
-limit 1;";
+from deltaforce.script s;";
 
     public string InsertScript => @" /* DeltaForce */
 insert into deltaforce.script(scriptname, repositorypath, hash, status, errormessage, created, createdby)

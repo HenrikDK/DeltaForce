@@ -37,10 +37,9 @@ begin
     );
 end";
 
-    public string GetScript => @" /* DeltaForce */
-select top 1 s.Id, s.ScriptName, s.RepositoryPath, s.Hash, s.Status, s.ErrorMessage
-from DeltaForce.Script s
-where s.RepositoryPath = @path;";
+    public string GetScripts => @" /* DeltaForce */
+select s.Id, s.ScriptName, s.RepositoryPath, s.Hash, s.Status, s.ErrorMessage
+from DeltaForce.Script s;";
 
     public string InsertScript => @" /* DeltaForce */
 insert into DeltaForce.Script (ScriptName, RepositoryPath, Hash, Status, ErrorMessage, Created, CreatedBy)
