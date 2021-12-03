@@ -22,6 +22,5 @@ global using Lamar.Microsoft.DependencyInjection;
 global using MySql.Data.MySqlClient;
 global using MoreLinq.Extensions;
 global using Npgsql;
-global using Oracle.ManagedDataAccess.Client;
 global using Prometheus;
 
