@@ -28,33 +28,31 @@ create table if not exists DeltaForce.State(
     Modified timestamp not null
 );";
 
-    public string GetScript => @" /* DeltaForce */
-select s.id, s.scriptname, s.repositorypath, s.hash, s.status, s.errormessage
-from deltaforce.script s
-where s.repositorypath = @path
-limit 1;";
+    public string GetScripts => @" /* DeltaForce */
+select s.Id, s.ScriptName, s.RepositoryPath, s.Hash, s.Status, s.ErrorMessage
+from DeltaForce.Script s;";
 
     public string InsertScript => @" /* DeltaForce */
-insert into deltaforce.script (scriptname, repositorypath, hash, status, errormessage, createdby)
-values (@scriptname, @repositorypath, @hash, @status, @errormessage, 'DeltaForce');";
+insert into DeltaForce.Script (ScriptName, RepositoryPath, Hash, Status, ErrorMessage, CreatedBy)
+values (@ScriptName, @RepositoryPath, @Hash, @Status, @ErrorMessage, 'DeltaForce');";
     
     public string UpdateScript => @" /* DeltaForce */
-update deltaforce.script
+update DeltaForce.Script
     set
-        hash = @Hash,
-        errormessage = @errormessage,
+        Hash = @Hash,
+        ErrorMessage = @ErrorMessage,
         Modified = current_timestamp,
         Status = @Status
-where id = @id;";
+where Id = @Id;";
     
     public string GetState => @" /* DeltaForce */
-select lastcommit from deltaforce.state where id = 1;";
+select LastCommit from DeltaForce.State where Id = 1;";
     
     public string SaveState => @" /* DeltaForce */
-insert into deltaforce.state (id, lastcommit, modified)
-values (1, @hash, current_timestamp)
-on conflict on constraint state_id_key do update set 
-        lastcommit = @hash,
-        modified = current_timestamp;";
+insert into DeltaForce.State (Id, LastCommit, Modified)
+values (1, @Hash, current_timestamp)
+on duplicate key update
+        LastCommit = @hash,
+        Modified = current_timestamp;";
 
 }
