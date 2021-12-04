@@ -15,7 +15,7 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
     private readonly IFileSystemRepository _fileSystemRepository;
     private readonly IScriptRepository _scriptRepository;
     private readonly IStateRepository _stateRepository;
-    private readonly ILogger<ProcessMigrationScripts> _log;
+    private readonly ILogger<ProcessMigrationScripts> _logger;
     private readonly IApplyMigrationScript _applyMigrationScript;
     private static readonly Gauge PendingScripts = Metrics.CreateGauge("delta_force_pending_scripts_count", "Number of pending sql scripts.");
     private static readonly Histogram JobExecutionTime = Metrics.CreateHistogram("delta_force_apply_script_time_seconds", "Histogram of script execution durations.");
@@ -26,14 +26,14 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
         IScriptRepository scriptRepository,
         IStateRepository stateRepository,
         IApplyMigrationScript applyMigrationScript,
-        ILogger<ProcessMigrationScripts> log)
+        ILogger<ProcessMigrationScripts> logger)
     {
         _gitRepository = gitRepository;
         _fileSystemRepository = fileSystemRepository;
         _scriptRepository = scriptRepository;
         _stateRepository = stateRepository;
         _applyMigrationScript = applyMigrationScript;
-        _log = log;
+        _logger = logger;
     }
        
     public void CloneRepoAndProcessScripts()
@@ -44,17 +44,19 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
             var current = _gitRepository.GetLatestCommit();
             if (current == previous)
             {
-                _log.LogInformation($"Latest commit: {previous} - repository master unchanged skipping run.");
-                return;   
+                _logger.LogInformation($"Latest commit: {previous} - repository master unchanged skipping run.");
+                return;
             }
             
             CloneRepositoryAndProcessScripts();
+            
+            _logger.LogInformation($"Updating state to new commit: {current}");
             
             _stateRepository.Update(current);
         }
         catch (Exception e)
         {
-            _log.LogError(e, "Error processing repository");
+            _logger.LogError(e, "Error processing repository");
         }
     }
 
@@ -64,18 +66,24 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
         _gitRepository.CloneRepository(_workspacePath);
         var scripts = _gitRepository.GetScripts(_workspacePath);
 
+        _logger.LogInformation($"Found {scripts.Count} scripts in repository folder with correct .sql file extension");
+        
         var existingScripts = _scriptRepository.GetScripts();
         var pending = scripts
             .Where(x => existingScripts[x].Any() == false ||
                         existingScripts[x].First().Status == ScriptStatus.Failed)
+            .OrderBy(x => x)
             .ToList();
         
         PendingScripts.Set(pending.Count);
         if (scripts.Count == 0)
         {
+            _logger.LogInformation("No pending scripts found, all done!");
             return;
         }
-            
+        
+        _logger.LogInformation($"Found {pending.Count} scripts in pending or failed state. Applying in alphabetical sequence..");
+
         pending.ForEach(x => ProcessPendingJob(x, existingScripts[x].FirstOrDefault()));
     }
 
@@ -84,13 +92,17 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
         using var timer = JobExecutionTime.NewTimer();
         try
         {
+            _logger.LogInformation($"Applying script {path}");
             _applyMigrationScript.Apply(path, existingScript);
             PendingScripts.Dec();
         }
         catch (Exception e)
         {
+            e.Data.Add("ScriptPath", path);
+            e.Data.Add("ExistingScript", existingScript != null);
+            
             // TODO, Notify user on script failure?
-            _log.LogError(e, "Error applying script");
+            _logger.LogError(e, $"Error applying script");
         }
     }
 }
