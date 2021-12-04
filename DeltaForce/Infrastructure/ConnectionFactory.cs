@@ -32,7 +32,7 @@ public class ConnectionFactory : IConnectionFactory
     {
         return _dbType.Value switch
         {
-            "pgsql" => new NpgSqlDialect(),
+            "pgsql" => new PgSqlDialect(),
             "mysql" => new MySqlDialect(),
             "mariadb" => new MySqlDialect(),
             "mssql" => new MsSqlDialect(),
