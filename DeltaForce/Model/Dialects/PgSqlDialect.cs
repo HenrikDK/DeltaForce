@@ -1,6 +1,6 @@
 namespace DeltaForce.Model.Dialects;
 
-public class NpgSqlDialect : ISqlDialect
+public class PgSqlDialect : ISqlDialect
 {
     public string CheckSchema => @" /* DeltaForce */
 select 1 from pg_catalog.pg_namespace
@@ -51,8 +51,8 @@ select lastcommit from deltaforce.state where id = 1;";
     
     public string SaveState => @" /* DeltaForce */
 insert into deltaforce.state (id, lastcommit, modified)
-values (1, @commitHash, current_timestamp)
-on conflict on constraint state_id_key do update set 
-        lastcommit = @commitHash,
+values (1, @hash, current_timestamp)
+on conflict on constraint state_id_key do update set
+        lastcommit = @hash,
         modified = current_timestamp;";
 }
