@@ -65,8 +65,8 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
         _fileSystemRepository.CleanWorkspace(_workspacePath);
         _gitRepository.CloneRepository(_workspacePath);
         var scripts = _gitRepository.GetScripts(_workspacePath);
-
-        _logger.LogInformation($"Found {scripts.Count} scripts in repository folder with correct .sql file extension");
+        
+        _logger.LogInformation($"Found {scripts.Count} scripts in repository folder with .sql file extension");
         
         var existingScripts = _scriptRepository.GetScripts();
         var pending = scripts
@@ -83,7 +83,7 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
         }
         
         _logger.LogInformation($"Found {pending.Count} scripts in pending or failed state. Applying in alphabetical sequence..");
-
+        
         pending.ForEach(x => ProcessPendingJob(x, existingScripts[x].FirstOrDefault()));
     }
 
