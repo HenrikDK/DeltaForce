@@ -11,7 +11,7 @@ create schema if not exists deltaforce;
 
 create table if not exists deltaforce.script(
     Id SERIAL primary key,
-    ScriptName varchar(255) null,
+    FileName varchar(255) null,
     RepositoryPath varchar(255) null,
     Hash varchar(512) null,
     Status int not null default 0,
@@ -29,22 +29,22 @@ create table if not exists deltaforce.state(
 );";
 
     public string GetScripts => @" /* DeltaForce */
-select s.id, s.scriptname, s.repositorypath, s.hash, s.status, s.errormessage 
+select s.Id, s.FileName, s.RepositoryPath, s.Hash, s.Status, s.ErrorMessage 
 from deltaforce.script s;";
 
     public string InsertScript => @" /* DeltaForce */
-insert into deltaforce.script(scriptname, repositorypath, hash, status, errormessage, created, createdby)
-values (@scriptname, @repositorypath, @hash, @status, @errormessage, current_timestamp, 'DeltaForce');";
+insert into deltaforce.script(FileName, RepositoryPath, Hash, Status, ErrorMessage, Created, CreatedBy)
+values (@FileName, @RepositoryPath, @Hash, @Status, @ErrorMessage, current_timestamp, 'DeltaForce');";
     
     public string UpdateScript => @" /* DeltaForce */
 update deltaforce.script
     set
         Hash = @Hash,
-        ErrorMessage = @errormessage,
+        ErrorMessage = @ErrorMessage,
         Modified = current_timestamp,
-        modifiedby = 'DeltaForce',
+        ModifiedBy = 'DeltaForce',
         Status = @Status
-where id = @id;";
+where id = @Id;";
     
     public string GetState => @" /* DeltaForce */
 select lastcommit from deltaforce.state where id = 1;";
