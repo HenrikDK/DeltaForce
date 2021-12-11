@@ -44,7 +44,7 @@ public class ProcessMigrationScripts : IProcessMigrationScripts
             var current = _gitRepository.GetLatestCommit();
             if (current == previous)
             {
-                _logger.LogInformation($"Latest commit: {previous} - repository master unchanged skipping run.");
+                _logger.LogInformation($"Latest commit: {previous} - repository unchanged, skipping run.");
                 return;
             }
             
