@@ -10,7 +10,7 @@ public interface IScriptRepository
     ILookup<string, Script> GetScripts();
     void Insert(Script script);
     void Update(Script script);
-    void Apply(Script script);
+    void Apply(string script);
 }
 
 public class ScriptRepository : IScriptRepository
@@ -59,9 +59,9 @@ public class ScriptRepository : IScriptRepository
         connection.Execute(sql, script);
     }
 
-    public void Apply(Script script)
+    public void Apply(string script)
     {
         using var connection = _connectionFactory.Get();
-        connection.Execute(script.SqlText);
+        connection.Execute(script);
     }
 }

@@ -78,7 +78,7 @@ public class ApplyMigrationScript : IApplyMigrationScript
         {
             using (var scope = new TransactionScope())
             {
-                _scriptRepository.Apply(script);
+                _scriptRepository.Apply(script.SqlText);
                 scope.Complete();
             }
                 
