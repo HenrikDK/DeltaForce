@@ -23,4 +23,5 @@ global using MySql.Data.MySqlClient;
 global using MoreLinq.Extensions;
 global using Npgsql;
 global using Prometheus;
-
+global using Serilog;
+global using Serilog.Formatting.Json;
