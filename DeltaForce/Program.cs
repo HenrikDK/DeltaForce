@@ -1,35 +1,30 @@
-using DeltaForce.Infrastructure;
+using DeltaForce;
 
-namespace DeltaForce;
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console(new JsonFormatter())
+    .CreateLogger();
 
-public class Program
-{
-    public static bool Debug = false;
-
-    public static void Main(string[] args)
+var builder = Host.CreateDefaultBuilder()
+    .UseLamar((context, registry) => registry.Scan(x =>
     {
-        if (args.Contains("debug") || Debugger.IsAttached || Environment.GetEnvironmentVariable("debug") != null )
-        {
-            Debug = true;
-        }
+        x.AssemblyContainingType<Program>();
+        x.WithDefaultConventions();
+        x.LookForRegistries();
+    }))
+    .ConfigureServices((hostContext, services) =>
+    {
+        services.AddHostedService<ServiceHost>();
+        services.AddMemoryCache();
+    })
+    .ConfigureLogging((context, config) =>
+    {
+        config.ClearProviders();
+        config.AddSerilog();
+    });
+    
+var app = builder.Build();
 
-        var host = Host.CreateDefaultBuilder()
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddLamar(new WorkerRegistry());
-                services.AddHostedService<ServiceHost>();
-                if (Debug)
-                {
-                    services.AddLogging(x =>
-                    {
-                        x.AddDebug();
-                        x.AddConsole();
-                    });
-                }
-            })
-            .UseLamar()
-            .Build();
+app.Run();
 
-        host.Run();
-    }
-}
+Log.CloseAndFlush();
