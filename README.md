@@ -31,7 +31,14 @@ The ssh key needs to be mounted in the container and the configuration value git
 
 The service uses serilog to logs it's work in a json structure to std out and std error so scraping these will allow the service to be integrated into existing error collection workflows.
 
+## Startup
 On first startup the service will attempt to check if the database instance already has a schema called 'DeltaForce', and if not create it and the required tables. These tables are then used to maintain application state and track which scripts have been processed and if they need re-processing (eg. file contents have changed).
+
+## Metrics
+The service also exposes a prometheus metrics endpoint on port 1402 with the path '/metrics' for now it only tracks two values:
+
+1.  "delta_force_pending_scripts_count"
+2.  "delta_force_apply_script_time_seconds"
 
 ## Inspiration: 
 This work was inspired by other projects check them out:
