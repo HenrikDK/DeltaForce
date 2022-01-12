@@ -2,6 +2,7 @@ using DeltaForce;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
+    .MinimumLevel.Information()
     .WriteTo.Console(new JsonFormatter())
     .CreateLogger();
 
