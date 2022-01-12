@@ -7,7 +7,7 @@ The service will monitor the folder (non-recursively) and apply new scripts sort
 
 When using the service it is recommended to prefix scripts using a common key and 4 digit counter to ensure scripts are applied in the correct sequence.
 
-You can combine this tool with a scripts repository and a sturdy review process to ensure that any change making it's way into production will be of high quality and have a clear and visible audit trail.
+You can combine this tool with a scripts repository and a sturdy review process to ensure that any change making it's way into production is "high quality" and has a clear and visible audit trail.
 
 ## Usage
 To use the service deploy it using a container orchestrator of your choice (container image available on docker hub [here](https://hub.docker.com/repository/docker/henrikdk/delta-force)). 
