@@ -37,7 +37,7 @@ The service uses serilog to logs it's work in a json structure to std out and st
 On first startup the service will attempt to check if the database instance already has a schema called 'DeltaForce', and if not create it and the required tables. These tables are then used to maintain application state and track which scripts have been processed and if they need re-processing (eg. file contents have changed).
 
 ## Metrics
-The service also exposes a prometheus metrics endpoint on port 1402 with the path '/metrics' for now it only tracks two values:
+The service also exposes a prometheus metrics endpoint on port 1402 with the path '/metrics', for now it only tracks two values:
 
 1.  "delta_force_pending_scripts_count"
 2.  "delta_force_apply_script_time_seconds"
