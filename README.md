@@ -1,5 +1,5 @@
 # DeltaForce
-A simple containerized DB migration application that will run sql scripts from a git repository folder.
+A simple containerized DB migration service that will run sql scripts from a git repository folder.
 
 DeltaForce currently supports pgsql, mysql, mariadb, and mssql.
 
